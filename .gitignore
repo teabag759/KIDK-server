@@ -1,0 +1,52 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+### VS Code ###
+.vscode/
+
+### Spring Boot ###
+/target/
+*.pid
+*.gzhttps://github.com/teabag759/KIDK-server.git
+
+### OS-specific ###
+.DS_Store
+Thumbs.db
+
+### Lombok ###
+lombok.config
+
+### Logs ###
+logs/
+*.log
+*.out
+
+### Database dumps ###
+*.sql
+
+### Environment files (never commit) ###
+application.yml
+application-local.yml
+application-dev.yml
+application-prod.yml
+
+### Node (if frontend added later) ###
+node_modules/
+dist/
