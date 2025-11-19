@@ -1,4 +1,6 @@
 package com.kidk.api.domain.family;
 
-public class FamilyRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FamilyRepository extends JpaRepository<Family, Long> {
 }
