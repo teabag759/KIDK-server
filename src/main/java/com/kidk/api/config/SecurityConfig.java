@@ -14,14 +14,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // 개발 단계라 CSRF 끔
                 .csrf(csrf -> csrf.disable())
                 // 요청 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()
                 )
-                // 기본 로그인 폼/HTTP Basic 도 일단 끔
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
 
