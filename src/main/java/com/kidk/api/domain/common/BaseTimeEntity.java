@@ -15,16 +15,16 @@ public abstract class BaseTimeEntity {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime upadtedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.upadtedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.upadtedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }

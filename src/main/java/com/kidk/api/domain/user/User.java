@@ -1,5 +1,6 @@
 package com.kidk.api.domain.user;
 
+import com.kidk.api.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,14 +62,6 @@ public class User {
 
     @Column(name = "status_changed_at")
     private LocalDateTime statusChangedAt;
-
-    @Column(name = "created_at", nullable = false,
-            columnDefinition = "timestamp default current_timestamp")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false,
-            columnDefinition = "timestamp default current_timestamp on update current_timestamp")
-    private LocalDateTime updatedAt;
 
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
