@@ -1,4 +1,15 @@
 package com.kidk.api.domain.friend;
 
-public class FriendRepository {
+import com.kidk.api.domain.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface FriendRepository extends JpaRepository<Friend, Long> {
+
+    List<Friend> findByUser(User user);
+
+    List<Friend> findByFriendUser(User user);
+
+    boolean existsByUserAndFriendUser(User user, User friendUser);
 }
