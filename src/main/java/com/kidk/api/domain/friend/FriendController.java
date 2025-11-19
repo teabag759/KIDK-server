@@ -12,7 +12,7 @@ public class FriendController {
 
     private final FriendService friendService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/friends")
     public List<Friend> getFriends(@PathVariable Long userId) {
         return friendService.getUserFriends(userId);
     }

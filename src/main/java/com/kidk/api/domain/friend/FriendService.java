@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,11 @@ public class FriendService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return friendRepository.findByUser(user);
+        List<Friend> sent = friendRepository.findByUser(user);
+        List<Friend> received = friendRepository.findByFriendUser(user);
+
+        return Stream.concat(sent.stream(), received.stream())
+                .filter(f -> f.getStatus().equals("ACCEPTED"))
+                .collect(Collectors.toList());
     }
 }
