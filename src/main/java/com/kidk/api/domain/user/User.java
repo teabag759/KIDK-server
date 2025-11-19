@@ -57,6 +57,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 20)
     private String phone;                // 부모 연락처 (선택)
 
+    @Builder.Default
     @Column(nullable = false, length = 20)
     private String status = "ACTIVE";    // ACTIVE, DORMANT, WITHDRAWN, DELETED
 
