@@ -37,11 +37,4 @@ public class Friend extends BaseTimeEntity {
 
     @Column(nullable = false, length = 20)
     private String status;  // REQUESTED, ACCEPTED, REJECTED 등
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
 }

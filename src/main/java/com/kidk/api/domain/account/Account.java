@@ -1,4 +1,6 @@
 package com.kidk.api.domain.account;
 
-public class Account {
+import com.kidk.api.domain.common.BaseTimeEntity;
+
+public class Account extends BaseTimeEntity {
 }
