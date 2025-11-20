@@ -1,30 +1,35 @@
 package com.kidk.api.domain.family;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
-public class FamilyRepositoryTest {
-
+class FamilyRepositoryTest {
 
     @Autowired
     private FamilyRepository familyRepository;
 
     @Test
-    void save_and_find() {
+    @DisplayName("Family 저장 및 조회")
+    void saveAndFind() {
         Family family = Family.builder()
-                .familyName("test")
+                .familyName("테스트 가족")
                 .build();
 
         Family saved = familyRepository.save(family);
-        Family found = familyRepository.findById(saved.getId()).orElseThrow();
+
+        Family found = familyRepository.findById(saved.getId())
+                .orElseThrow();
 
         assertEquals(saved.getId(), found.getId());
+        assertEquals("테스트 가족", found.getFamilyName());
     }
-
 }

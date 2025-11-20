@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,11 +17,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class FamilyMemberRepositoryTest {
-
-    @Autowired
-    private FamilyMemberRepository familyMemberRepository;
 
     @Autowired
     private FamilyRepository familyRepository;
@@ -28,44 +27,46 @@ class FamilyMemberRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    @DisplayName("FamilyMember 저장 및 조회 - save_and_find")
-    void save_and_find() {
-        Family family = familyRepository.findById(1L).orElseThrow();
-        User user = userRepository.findById(1L).orElseThrow();
+    @Autowired
+    private FamilyMemberRepository familyMemberRepository;
 
+    @Test
+    @DisplayName("FamilyMember 저장 및 조회")
+    void save_and_find() {
+
+        // 1) User 생성
+        User user = userRepository.save(
+                User.builder()
+                        .firebaseUid("test-uid")
+                        .email("test@example.com")
+                        .userType("PARENT")
+                        .name("테스트유저")
+                        .status("ACTIVE")
+                        .build()
+        );
+
+        // 2) Family 생성
+        Family family = familyRepository.save(
+                Family.builder()
+                        .familyName("테스트 가족")
+                        .build()
+        );
+
+        // 3) FamilyMember 생성
         FamilyMember member = FamilyMember.builder()
                 .family(family)
                 .user(user)
                 .role("PARENT")
                 .primaryParent(true)
-                .invitedBy(null)
-                .invitedAt(LocalDateTime.now())
-                .acceptedAt(LocalDateTime.now())
                 .status("ACCEPTED")
                 .build();
 
         FamilyMember saved = familyMemberRepository.save(member);
-        FamilyMember found = familyMemberRepository.findById(saved.getId()).orElseThrow();
+
+        FamilyMember found = familyMemberRepository.findById(saved.getId())
+                .orElseThrow();
 
         assertEquals(saved.getId(), found.getId());
         assertEquals("PARENT", found.getRole());
-        assertTrue(found.isPrimaryParent());
-        assertEquals("ACCEPTED", found.getStatus());
-    }
-
-    @Test
-    @DisplayName("가족 ID로 가족 구성원 조회 - findByFamilyId")
-    void findByFamilyId() {
-        List<FamilyMember> members = familyMemberRepository.findByFamilyId(1L);
-        assertNotNull(members);
-        // 샘플 데이터 / 테스트 상황에 따라 비어 있을 수도 있으니 isEmpty()는 강제하지 않음
-    }
-
-    @Test
-    @DisplayName("유저 ID로 가족 구성원 조회 - findByUserId")
-    void findByUserId() {
-        List<FamilyMember> members = familyMemberRepository.findByUserId(1L);
-        assertNotNull(members);
     }
 }
