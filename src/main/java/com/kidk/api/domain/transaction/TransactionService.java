@@ -2,6 +2,7 @@ package com.kidk.api.domain.transaction;
 
 import com.kidk.api.domain.account.Account;
 import com.kidk.api.domain.account.AccountRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
