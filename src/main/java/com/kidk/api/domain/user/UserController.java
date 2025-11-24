@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,8 +16,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public List<User> getUsers() {
-
-        return userService.getAllUsers();
+    public List<UserResponse> getUsers() {
+        return userService.getAllUsers().stream()
+                .map(UserResponse::new)
+                .collect(Collectors.toList());
     }
 }
