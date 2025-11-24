@@ -55,7 +55,7 @@ public class MissionService {
                 .orElseThrow(() -> new RuntimeException("Mission not found"));
 
         if ("COMPLETED".equals(mission.getStatus())) {
-            throw new RuntimeException("이미 완료된 미션")
+            throw new RuntimeException("이미 완료된 미션");
         }
 
         mission.complete();
