@@ -12,14 +12,12 @@ public class FamilyResponse {
     private String familyName;
     private String inviteCode;
     private LocalDateTime onCreate;
-    private LocalDateTime onUpdate;
 
     public FamilyResponse(Family family) {
         this.id = family.getId();
         this.familyName = family.getFamilyName();
         this.inviteCode = family.getInviteCode();
         this.onCreate = family.getCreatedAt();
-        this.onUpdate = family.getUpdatedAt();
     }
 
 }

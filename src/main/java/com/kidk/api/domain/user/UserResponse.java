@@ -20,11 +20,9 @@ public class UserResponse {
     private String profileImageUrl;
     private LocalDate birthDate;
     private String phone;
-    private String status = "ACTIVE";
+    private String status;
     private LocalDateTime statusChangedAt;
     private LocalDateTime lastLoginAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -41,8 +39,5 @@ public class UserResponse {
         this.statusChangedAt = user.getStatusChangedAt();
         this.lastLoginAt = user.getLastLoginAt();
 
-        // 부모 클래스 필드 접근
-        this.createdAt = user.getCreatedAt();
-        this.updatedAt = user.getUpdatedAt();
     }
 }
