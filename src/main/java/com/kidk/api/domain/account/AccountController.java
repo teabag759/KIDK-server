@@ -18,7 +18,7 @@ public class AccountController {
     @PostMapping
     public AccountResponse createAccount(@RequestBody AccountRequest request) {
         Account account = accountService.createAccount(
-                request.getId(),
+                request.getUserId(),
                 request.getAccountType(),
                 request.getAccountName(),
                 request.getInitialBalance()

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @ToString
 @NoArgsConstructor
 public class AccountRequest {
-    private Long id;
+    private Long userId;
     private String accountType; // SPENDING, SAVINGS
     private String accountName;
     private BigDecimal initialBalance;
