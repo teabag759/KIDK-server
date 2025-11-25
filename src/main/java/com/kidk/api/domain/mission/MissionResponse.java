@@ -5,19 +5,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class MissionResponse {
-    private Long id;
-    private Long creatorId;
-    private String creatorName;
-    private Long ownerId;
-    private String ownerName;
-    private String missionType;
-    private String title;
-    private String description;
-    private BigDecimal rewardAmount;
-    private String status;
-    private LocalDate targetDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime completedAt;
+    private final Long id;
+    private final Long creatorId;
+    private final String creatorName;
+    private final Long ownerId;
+    private final String ownerName;
+    private final String missionType;
+    private final String title;
+    private final String description;
+    private final BigDecimal rewardAmount;
+    private final String status;
+    private final LocalDate targetDate;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime completedAt;
 
     public MissionResponse(Mission mission) {
         this.id = mission.getId();

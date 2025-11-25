@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class FamilyResponse {
-    private Long id;
-    private String familyName;
-    private String inviteCode;
-    private LocalDateTime onCreate;
+    private final Long id;
+    private final String familyName;
+    private final String inviteCode;
+    private final LocalDateTime onCreate;
 
     public FamilyResponse(Family family) {
         this.id = family.getId();

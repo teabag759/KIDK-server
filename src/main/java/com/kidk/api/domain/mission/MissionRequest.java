@@ -1,6 +1,8 @@
 package com.kidk.api.domain.mission;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MissionRequest {
     private Long creatorId;
     private Long ownerId;

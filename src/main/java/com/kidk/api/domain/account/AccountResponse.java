@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 @Getter
 @ToString
 public class AccountResponse {
-    private Long id;
-    private Long userId;
-    private String accountType;
-    private String accountName;
-    private BigDecimal balance;
-    private boolean active;
-    private boolean primary;
+    private final Long id;
+    private final Long userId;
+    private final String accountType;
+    private final String accountName;
+    private final BigDecimal balance;
+    private final boolean active;
+    private final boolean primary;
 
 
     public AccountResponse(Account account) {
