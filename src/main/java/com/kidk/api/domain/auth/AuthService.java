@@ -1,5 +1,7 @@
 package com.kidk.api.domain.auth;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.kidk.api.domain.refreshtoken.RefreshTokenRepository;
 import com.kidk.api.domain.refreshtoken.RefreshTokenService;
 import com.kidk.api.domain.user.User;
@@ -16,9 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
 
-    // Firebase 설정이 안되어 있다면 주석 처리하고 아래 임시 로직 사용
-    // private final FirebaseAuth firebaseAuth;
-
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenService refreshTokenService;
@@ -30,14 +29,9 @@ public class AuthService {
 
         // 1. Firebase 토큰 검증
         try {
-            // [실제 배포 시 사용 코드]
-            // FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(request.getFirebaseToken());
-            // firebaseUid = decodedToken.getUid();
-            // email = decodedToken.getEmail();
-
-            // [해커톤용 임시 우회 코드] - 프론트가 보낸 토큰을 그대로 UID로 사용
-            firebaseUid = request.getFirebaseToken();
-            email = firebaseUid + "@temp.com";
+             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(request.getFirebaseToken());
+             firebaseUid = decodedToken.getUid();
+             email = decodedToken.getEmail();
 
         } catch (Exception e) {
             log.error("Firebase Token Verification Failed", e);
