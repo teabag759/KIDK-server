@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -41,10 +42,24 @@ public class UserService {
         user.setPhone(request.getPhone());
 
         // 연령 확인 로직 (필요 시 추가)
-        // if (request.getBirthDate() != null) { ... }
+        if ("CHILD".equals(user.getUserType()) && request.getBirthDate() != null) {
+            validateChildAge(request.getBirthDate());
+        }
 
         return new UserResponse(user);
     }
+
+    // 연령 검증
+    private void validateChildAge(LocalDate birthDate) {
+        int currentYear = LocalDate.now().getYear();
+        int birthYear = birthDate.getYear();
+        int age = currentYear - birthYear;
+
+        if (age < 5 || age > 15) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+    }
+
 
     // 프로필 이미지 업로드 (S3 연동 전 Mock 로직 포함)
     @Transactional

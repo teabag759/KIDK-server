@@ -1,5 +1,6 @@
 package com.kidk.api.domain.user;
 
+import com.kidk.api.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
