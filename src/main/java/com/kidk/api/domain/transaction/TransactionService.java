@@ -42,10 +42,12 @@ public class TransactionService {
         }
 
         // 잔액 계산
-        BigDecimal newBalance =
-                type.equals("DEPOSIT")
-                        ? account.getBalance().add(amount)
-                        : account.getBalance().subtract(amount);
+        BigDecimal newBalance;
+        if ("DEPOSIT".equals(type) || "REWARD".equals(type)) {
+            newBalance = account.getBalance().add(amount);
+        } else {
+            newBalance = account.getBalance().subtract(amount);
+        }
 
         // Account 업데이트
         account.setBalance(newBalance);
