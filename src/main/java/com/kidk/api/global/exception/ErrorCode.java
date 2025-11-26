@@ -22,6 +22,11 @@ public enum ErrorCode {
     ALREADY_IN_FAMILY(HttpStatus.CONFLICT, "FAMILY_002", "이미 가족에 소속되어 있습니다."),
     INVALID_INVITE_CODE(HttpStatus.BAD_REQUEST, "FAMILY_003", "유효하지 않은 초대 코드입니다."),
 
+    // Account (계좌 관련)
+    ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "ACCOUNT_001", "계좌를 찾을 수 없습니다."),
+    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "ACCOUNT_002", "잔액이 부족합니다."),
+    SAME_ACCOUNT_TRANSFER(HttpStatus.BAD_REQUEST, "ACCOUNT_003", "동일한 계좌로 이체할 수 없습니다."),
+
     // Common (공통)
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "SYS_001", "잘못된 입력값입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS_002", "서버 내부 오류가 발생했습니다.");
