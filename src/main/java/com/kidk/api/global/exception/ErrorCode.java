@@ -21,6 +21,7 @@ public enum ErrorCode {
     FAMILY_NOT_FOUND(HttpStatus.NOT_FOUND, "FAMILY_001", "가족 정보를 찾을 수 없습니다."),
     ALREADY_IN_FAMILY(HttpStatus.CONFLICT, "FAMILY_002", "이미 가족에 소속되어 있습니다."),
     INVALID_INVITE_CODE(HttpStatus.BAD_REQUEST, "FAMILY_003", "유효하지 않은 초대 코드입니다."),
+    INVITE_CODE_EXPIRED(HttpStatus.BAD_REQUEST, "FAMILY_004", "초대 코드가 만료되었습니다. (유효기간 7일 경과)"),
 
     // Account (계좌 관련)
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "ACCOUNT_001", "계좌를 찾을 수 없습니다."),

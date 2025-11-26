@@ -74,4 +74,10 @@ public class AuthService {
                 .userType(user.getUserType())
                 .build();
     }
+
+    // 로그아웃
+    public void logout(String refreshToken) {
+        // DB에서 해당 리프레시 토큰 삭제
+        refreshTokenService.deleteToken(refreshToken);
+    }
 }
