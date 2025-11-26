@@ -20,7 +20,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    // application.yml에 jwt.secret 설정이 없으면 기본값을 사용 (해커톤용 안전장치)
+    // application.yml에 jwt.secret 설정이 없으면 기본값을 사용
     @Value("${jwt.secret:kidk_secret_key_must_be_over_256_bits_length_for_security_please_change_it}")
     private String secretKey;
 
@@ -32,11 +32,10 @@ public class JwtProvider {
 
     @PostConstruct
     protected void init() {
-        // 비밀키를 Base64로 인코딩하거나 바이트 배열로 변환하여 Key 객체 생성
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    // 1. Access Token 생성 (AuthService에서 호출)
+    // 1. Access Token 생성
     public String createAccessToken(String firebaseUid, String role) {
         Claims claims = Jwts.claims().setSubject(firebaseUid);
         claims.put("role", role);
@@ -49,7 +48,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    // 2. Refresh Token 생성 (AuthService에서 호출)
+    // 2. Refresh Token 생성
     public String createRefreshToken(String firebaseUid) {
         Claims claims = Jwts.claims().setSubject(firebaseUid);
         Date now = new Date();
@@ -61,7 +60,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    // 3. 토큰에서 인증 정보 조회 (Filter에서 호출)
+    // 3. 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         // 토큰에서 firebaseUid 추출 후 UserDetails 로드
         String firebaseUid = this.getFirebaseUid(token);
@@ -69,7 +68,7 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // 4. 토큰에서 회원 정보(FirebaseUid) 추출
+    // 4. 토큰에서 회원 정보
     public String getFirebaseUid(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
