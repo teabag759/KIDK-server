@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/missions") // 요구사항의 기본 경로 (v1 포함)
+@RequestMapping("/api/v1/missions") // 요구사항의 기본 경로 (v1 포함)
 @RequiredArgsConstructor
 public class MissionVerificationController {
 

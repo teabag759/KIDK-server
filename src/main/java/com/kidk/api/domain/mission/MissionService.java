@@ -5,6 +5,9 @@ import com.kidk.api.domain.account.AccountService;
 import com.kidk.api.domain.transaction.TransactionService;
 import com.kidk.api.domain.user.User;
 import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.global.exception.CustomException;
+import com.kidk.api.global.exception.ErrorCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,28 +47,29 @@ public class MissionService {
     }
 
     // 미션 완료 처리
+    @Transactional
     public Mission completeMission(Long missionId) {
         Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> new RuntimeException("Mission not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.MISSION_NOT_FOUND));
 
         if ("COMPLETED".equals(mission.getStatus())) {
-            throw new RuntimeException("이미 완료된 미션");
+            throw new CustomException(ErrorCode.ALREADY_COMPLETED_MISSION);
         }
 
+        // 1. 미션 상태 변경
         mission.complete();
 
-        // 보상 지급
+        // 2. 보상 지급
         Account childAccount = accountService.getPrimaryAccount(mission.getOwner().getId());
 
         transactionService.createTransaction(
                 childAccount.getId(),
                 "REWARD",
                 mission.getRewardAmount(),
-                "미션 보상",
-                mission.getTitle(),
+                "MISSION_REWARD",
+                "미션 보상: " + mission.getTitle(),
                 mission.getId()
         );
-
 
         return missionRepository.save(mission);
     }
