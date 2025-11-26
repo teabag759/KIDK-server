@@ -18,7 +18,7 @@ public class AuthController {
     }
 
     // 로그아웃 API
-    // 헤더에 'Refresh-Token' 키로 토큰을 담아 보낸다고 가정
+    // 헤더에 'Refresh-Token' 키로 토큰을 담아 보냄
     @PostMapping("/logout")
     public ApiResponse<Void> logout(@RequestHeader("Refresh-Token") String refreshToken) {
         authService.logout(refreshToken);

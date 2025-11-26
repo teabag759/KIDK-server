@@ -4,10 +4,13 @@ import com.kidk.api.domain.familymember.FamilyMember;
 import com.kidk.api.domain.familymember.FamilyMemberRepository;
 import com.kidk.api.domain.user.User;
 import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.global.exception.CustomException;
+import com.kidk.api.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -50,6 +53,12 @@ public class FamilyService {
         Family family = familyRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new RuntimeException("Invalid invite code"));
 
+        // 초대 코드 만료 체크 (생성 후 7일)
+        if (family.getCreatedAt().plusDays(7).isBefore(LocalDateTime.now())) {
+            throw new CustomException(ErrorCode.INVITE_CODE_EXPIRED);
+        }
+
+        // 이미 가입된 멤버인지 확인
         if (familyMemberRepository.findByFamilyAndUser(family, user).isPresent()) {
             throw new RuntimeException("Already a member of this family");
         }
