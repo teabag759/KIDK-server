@@ -1,10 +1,8 @@
 package com.kidk.api.domain.auth;
 
+import com.kidk.api.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -15,7 +13,15 @@ public class AuthController {
 
     // 로그인 API
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        return authService.loginOrRegister(request);
+    public ApiResponse<AuthResponse> login(@RequestBody AuthRequest request) {
+        return ApiResponse.success(authService.loginOrRegister(request));
+    }
+
+    // 로그아웃 API
+    // 헤더에 'Refresh-Token' 키로 토큰을 담아 보냄
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestHeader("Refresh-Token") String refreshToken) {
+        authService.logout(refreshToken);
+        return ApiResponse.success();
     }
 }

@@ -65,4 +65,9 @@ public class RefreshTokenService {
                 .filter(RefreshToken::isValid) // 유효 상태 체크
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or Expired Refresh Token"));
     }
+
+    // 로그아웃 시 토큰 삭제
+    public void deleteToken(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
 }
