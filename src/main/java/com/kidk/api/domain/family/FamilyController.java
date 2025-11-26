@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/families")
+@RequestMapping("/api/v1/families")
 @RequiredArgsConstructor
 public class FamilyController {
 

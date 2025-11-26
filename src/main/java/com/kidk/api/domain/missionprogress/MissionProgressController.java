@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/mission-progress")
+@RequestMapping("/api/v1/mission-progress")
 @RequiredArgsConstructor
 public class MissionProgressController {
 

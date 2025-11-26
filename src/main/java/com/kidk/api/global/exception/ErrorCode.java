@@ -28,6 +28,12 @@ public enum ErrorCode {
     INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "ACCOUNT_002", "잔액이 부족합니다."),
     SAME_ACCOUNT_TRANSFER(HttpStatus.BAD_REQUEST, "ACCOUNT_003", "동일한 계좌로 이체할 수 없습니다."),
 
+    // Mission & Verification
+    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_001", "미션을 찾을 수 없습니다."),
+    ALREADY_COMPLETED_MISSION(HttpStatus.BAD_REQUEST, "MISSION_002", "이미 완료된 미션입니다."),
+    VERIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "VERIFICATION_001", "인증 내역을 찾을 수 없습니다."),
+    ALREADY_REVIEWED(HttpStatus.BAD_REQUEST, "VERIFICATION_002", "이미 검토된 인증입니다."),
+
     // Common (공통)
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "SYS_001", "잘못된 입력값입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SYS_002", "서버 내부 오류가 발생했습니다.");
