@@ -24,7 +24,7 @@ public class FamilyService {
     // 1. 가족 생성 (부모)
     public Family createFamily(Long userId, String familyName) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Family family = Family.builder()
                 .familyName(familyName)
@@ -48,7 +48,7 @@ public class FamilyService {
     // 2. 가족 가입(자녀/배우자) - 초대 코드 입력
     public FamilyMember joinFamily(Long userId, String inviteCode) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Family family = familyRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new RuntimeException("Invalid invite code"));

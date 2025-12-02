@@ -2,6 +2,8 @@ package com.kidk.api.domain.account;
 
 import com.kidk.api.domain.user.User;
 import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.global.exception.CustomException;
+import com.kidk.api.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +47,7 @@ public class AccountService {
     public Account createAccount(Long userId, String accountType, String accountName, BigDecimal initBalance) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (accountRepository.existsByUserIdAndAccountName(userId, accountName)) {
             throw new RuntimeException("Duplicated account name");
