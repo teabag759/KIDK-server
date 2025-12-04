@@ -28,6 +28,9 @@ public enum ErrorCode {
     INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "ACCOUNT_002", "잔액이 부족합니다."),
     SAME_ACCOUNT_TRANSFER(HttpStatus.BAD_REQUEST, "ACCOUNT_003", "동일한 계좌로 이체할 수 없습니다."),
 
+    // Savings Goal (저축 목표 관련)
+    SAVINGS_GOAL_NOT_FOUND(HttpStatus.NOT_FOUND, "GOAL_001", "저축 목표를 찾을 수 없습니다."),
+
     // Mission & Verification
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_001", "미션을 찾을 수 없습니다."),
     ALREADY_COMPLETED_MISSION(HttpStatus.BAD_REQUEST, "MISSION_002", "이미 완료된 미션입니다."),
