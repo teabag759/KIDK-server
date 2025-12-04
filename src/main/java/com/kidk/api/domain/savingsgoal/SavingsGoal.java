@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,7 +47,7 @@ public class SavingsGoal extends BaseTimeEntity {
     private BigDecimal currentAmount = BigDecimal.ZERO;
 
     @Column(name = "target_date")
-    private LocalDate targetDate;
+    private LocalDateTime targetDate;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
