@@ -1,5 +1,7 @@
 package com.kidk.api.domain.family;
 
+import com.kidk.api.domain.family.entity.Family;
+import com.kidk.api.domain.family.repository.FamilyRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

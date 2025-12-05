@@ -1,9 +1,11 @@
 package com.kidk.api.domain.missionprogress;
 
-import com.kidk.api.domain.mission.Mission;
-import com.kidk.api.domain.mission.MissionRepository;
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.repository.MissionRepository;
+import com.kidk.api.domain.missionprogress.entity.MissionProgress;
+import com.kidk.api.domain.missionprogress.repository.MissionProgressRepository;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

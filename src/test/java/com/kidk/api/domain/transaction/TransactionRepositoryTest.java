@@ -1,9 +1,11 @@
 package com.kidk.api.domain.transaction;
 
-import com.kidk.api.domain.account.Account;
-import com.kidk.api.domain.account.AccountRepository;
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.account.entity.Account;
+import com.kidk.api.domain.account.repository.AccountRepository;
+import com.kidk.api.domain.transaction.entity.Transaction;
+import com.kidk.api.domain.transaction.repository.TransactionRepository;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

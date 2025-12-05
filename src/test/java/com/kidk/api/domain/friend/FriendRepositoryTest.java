@@ -1,7 +1,9 @@
 package com.kidk.api.domain.friend;
 
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.friend.entity.Friend;
+import com.kidk.api.domain.friend.repository.FriendRepository;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,13 @@
 package com.kidk.api.domain.mission;
 
-import com.kidk.api.domain.account.Account;
-import com.kidk.api.domain.account.AccountRepository;
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.account.entity.Account;
+import com.kidk.api.domain.account.repository.AccountRepository;
+import com.kidk.api.domain.mission.dto.MissionRequest;
+import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.repository.MissionRepository;
+import com.kidk.api.domain.mission.service.MissionService;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

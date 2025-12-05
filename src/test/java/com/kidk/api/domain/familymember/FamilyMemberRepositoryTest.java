@@ -1,18 +1,17 @@
 package com.kidk.api.domain.familymember;
 
-import com.kidk.api.domain.family.Family;
-import com.kidk.api.domain.family.FamilyRepository;
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.family.entity.Family;
+import com.kidk.api.domain.family.repository.FamilyRepository;
+import com.kidk.api.domain.familymember.entity.FamilyMember;
+import com.kidk.api.domain.familymember.repository.FamilyMemberRepository;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
