@@ -8,6 +8,7 @@ import com.kidk.api.domain.transaction.entity.Transaction;
 import com.kidk.api.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,18 +20,20 @@ import java.util.stream.Collectors;
 public class TransactionController {
     private final TransactionService transactionService;
 
-    // 특정 계좌 거래 내역 조회
+    /// 특정 계좌 거래 내역 조회
     @GetMapping("/account/{accountId}")
-    public ApiResponse<List<TransactionResponse>> getTransactions(@PathVariable Long accountId) {
-        List<TransactionResponse> responses = transactionService.getTransactions(accountId).stream()
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactions(@PathVariable Long accountId) {
+        ApiResponse<List<TransactionResponse>> responses = ApiResponse.success(transactionService
+                .getTransactions(accountId)
+                .stream()
                 .map(TransactionResponse::new)
-                .collect(Collectors.toList());
-        return ApiResponse.success(responses);
+                .toList());
+        return ResponseEntity.ok(responses);
     }
 
-    // 거래 생성
+    /// 거래 생성
     @PostMapping
-    public ApiResponse<TransactionResponse> createTransaction(@RequestBody TransactionRequest request) {
+    public ResponseEntity<ApiResponse<TransactionResponse>> createTransaction(@RequestBody TransactionRequest request) {
         Transaction transaction = transactionService.createTransaction(
                 request.getAccountId(),
                 request.getType(),
@@ -39,19 +42,23 @@ public class TransactionController {
                 request.getDescription(),
                 request.getRelatedMissionId()
         );
-        return ApiResponse.success(new TransactionResponse(transaction));
+
+        ApiResponse<TransactionResponse> response = ApiResponse.success(new TransactionResponse(transaction));
+        return ResponseEntity.ok(response);
     }
 
-    // 계좌 이체 API
+    /// 계좌 이체 API
     @PostMapping("/transfer")
-    public ApiResponse<Void> transfer(@RequestBody @Valid TransferRequest request) {
+    public ResponseEntity<ApiResponse<Void>> transfer(@RequestBody @Valid TransferRequest request) {
         transactionService.transfer(
                 request.getFromAccountId(),
                 request.getToAccountId(),
                 request.getAmount(),
                 request.getDescription()
         );
-        return ApiResponse.success();
+
+
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
 }

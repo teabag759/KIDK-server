@@ -3,6 +3,7 @@ package com.kidk.api.domain.friend.controller;
 import com.kidk.api.domain.friend.service.FriendService;
 import com.kidk.api.domain.friend.entity.Friend;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public class FriendController {
 
     private final FriendService friendService;
 
+    /// 친구 추가
     @GetMapping("/{userId}/friends")
-    public List<Friend> getFriends(@PathVariable Long userId) {
-        return friendService.getUserFriends(userId);
+    public ResponseEntity<List<Friend>> getFriends(@PathVariable Long userId) {
+        return ResponseEntity.ok(friendService.getUserFriends(userId));
     }
 }

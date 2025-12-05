@@ -3,6 +3,8 @@ package com.kidk.api.domain.missionverification.controller;
 import com.kidk.api.domain.missionverification.service.MissionVerificationService;
 import com.kidk.api.domain.missionverification.entity.MissionVerification;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,41 +16,49 @@ public class MissionVerificationController {
 
     private final MissionVerificationService verificationService;
 
-    // 1. 미션 인증 제출
+    /// 미션 인증 제출
     @PostMapping("/{missionId}/verifications")
-    public MissionVerification submitVerification(
+    public ResponseEntity<MissionVerification> submitVerification(
             @PathVariable Long missionId,
             @RequestParam Long childId,
             @RequestParam String verificationType,
             @RequestParam(required = false) String content
     ) {
-        return verificationService.submitVerification(missionId, childId, verificationType, content);
+        MissionVerification missionVerification = verificationService.submitVerification(missionId, childId, verificationType, content);
+
+        return ResponseEntity.ok(missionVerification);
     }
 
-    // 2. 특정 미션의 인증 내역 조회
+    /// 특정 미션의 인증 내역 조회
     @GetMapping("/{missionId}/verifications")
-    public List<MissionVerification> getVerifications(@PathVariable Long missionId) {
-        return verificationService.getByMission(missionId);
+    public ResponseEntity<List<MissionVerification>> getVerifications(@PathVariable Long missionId) {
+        List<MissionVerification> missionVerifications = verificationService.getByMission(missionId);
+
+        return ResponseEntity.ok(missionVerifications);
     }
 
-    // 3. 인증 승인
+    /// 인증 승인
     @PatchMapping("/{missionId}/verifications/{verificationId}/approve")
-    public MissionVerification approve(
+    public ResponseEntity<MissionVerification> approve(
             @PathVariable Long missionId,       // URL 맞추기용 (사용 안해도 됨)
             @PathVariable Long verificationId,
             @RequestParam Long parentId
     ) {
-        return verificationService.approveVerification(verificationId, parentId);
+        MissionVerification missionVerification = verificationService.approveVerification(verificationId, parentId);
+
+        return ResponseEntity.ok(missionVerification);
     }
 
-    // 4. 인증 거절
+    /// 인증 거절
     @PatchMapping("/{missionId}/verifications/{verificationId}/reject")
-    public MissionVerification reject(
+    public ResponseEntity<MissionVerification> reject(
             @PathVariable Long missionId,
             @PathVariable Long verificationId,
             @RequestParam Long parentId,
             @RequestParam String reason
     ) {
-        return verificationService.rejectVerification(verificationId, parentId, reason);
+        MissionVerification missionVerification = verificationService.rejectVerification(verificationId, parentId, reason);
+
+        return ResponseEntity.ok(missionVerification);
     }
 }

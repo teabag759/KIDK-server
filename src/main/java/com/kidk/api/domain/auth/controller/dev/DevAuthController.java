@@ -6,6 +6,7 @@ import com.kidk.api.domain.user.repository.UserRepository;
 import com.kidk.api.global.response.ApiResponse;
 import com.kidk.api.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class DevAuthController {
 
     /// 개발용(테스트유저)
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> devLogin() {
+    public ResponseEntity<ApiResponse<AuthResponse>> devLogin() {
         // 테스트 유저 생성(존재하는 경우 조회)
         String testUid = "test-firebase-uid";
         User user = userRepository.findByFirebaseUid(testUid)
@@ -36,13 +37,15 @@ public class DevAuthController {
         String accessToken = jwtProvider.createAccessToken(user.getFirebaseUid(), user.getUserType());
         String refreshToken = jwtProvider.createRefreshToken(user.getFirebaseUid());
 
-        return ApiResponse.success(AuthResponse.builder()
+        ApiResponse<AuthResponse> response = ApiResponse.success(AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(user.getId())
                 .name(user.getName())
                 .userType(user.getUserType())
                 .build());
+
+        return ResponseEntity.ok(response);
     }
 
 }

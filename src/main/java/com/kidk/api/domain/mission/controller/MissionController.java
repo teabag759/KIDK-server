@@ -5,6 +5,7 @@ import com.kidk.api.domain.mission.dto.MissionResponse;
 import com.kidk.api.domain.mission.service.MissionService;
 import com.kidk.api.domain.mission.entity.Mission;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,35 +18,41 @@ public class MissionController {
 
     private final MissionService missionService;
 
-    // 미션 생성
+    /// 미션 생성
     @PostMapping
-    public MissionResponse createMission(@RequestBody MissionRequest request) {
+    public ResponseEntity<MissionResponse> createMission(@RequestBody MissionRequest request) {
 
         Mission mission = missionService.createMission(request);
+        MissionResponse missionResponse = new MissionResponse(mission);
 
-        return new MissionResponse(mission);
+        return ResponseEntity.ok(missionResponse);
     }
 
-    // 미션 완료 처리
+    /// 미션 완료 처리
     @PutMapping("/{missionId}/complete")
-    public MissionResponse completeMission(@PathVariable Long missionId) {
+    public ResponseEntity<MissionResponse> completeMission(@PathVariable Long missionId) {
         Mission mission = missionService.completeMission(missionId);
-        return new MissionResponse(mission);
+        MissionResponse missionResponse = new MissionResponse(mission);
+        return ResponseEntity.ok(missionResponse);
     }
 
-    // 특정 사용자(아이)의 미션 목록
+    /// 특정 사용자(아이)의 미션 목록
     @GetMapping("/owner/{ownerId}")
-    public List<MissionResponse> getOwnerMissions(@PathVariable Long ownerId) {
-        return missionService.getMissionsForOwner(ownerId).stream()
+    public ResponseEntity<List<MissionResponse>> getOwnerMissions(@PathVariable Long ownerId) {
+        List<MissionResponse> missionResponses = missionService.getMissionsForOwner(ownerId).stream()
                 .map(MissionResponse::new) // Entity -> DTO 변환
                 .collect(Collectors.toList());
+
+        return ResponseEntity.ok(missionResponses);
     }
 
-    // 부모(생성자)가 만든 미션 목록
+    /// 부모(생성자)가 만든 미션 목록
     @GetMapping("/creator/{creatorId}")
-    public List<MissionResponse> getCreatorMissions(@PathVariable Long creatorId) {
-        return missionService.getMissionsCreatedBy(creatorId).stream()
+    public ResponseEntity<List<MissionResponse>> getCreatorMissions(@PathVariable Long creatorId) {
+        List<MissionResponse> missionResponses = missionService.getMissionsCreatedBy(creatorId).stream()
                 .map(MissionResponse::new) // Entity -> DTO 변환
                 .collect(Collectors.toList());
+
+        return ResponseEntity.ok(missionResponses);
     }
 }
