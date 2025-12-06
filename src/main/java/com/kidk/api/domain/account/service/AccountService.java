@@ -52,7 +52,7 @@ public class AccountService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (accountRepository.existsByUserIdAndAccountName(userId, accountName)) {
-            throw new RuntimeException("Duplicated account name");
+            throw new CustomException(ErrorCode.DUPLICATE_ACCOUNT_NAME);
         }
 
         // 기존 계좌가 없을 경우, 이번에 만드는 계좌가 primary 계좌가 되도록

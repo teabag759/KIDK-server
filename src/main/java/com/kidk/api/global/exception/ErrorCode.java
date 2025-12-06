@@ -27,6 +27,7 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "ACCOUNT_001", "계좌를 찾을 수 없습니다."),
     INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "ACCOUNT_002", "잔액이 부족합니다."),
     SAME_ACCOUNT_TRANSFER(HttpStatus.BAD_REQUEST, "ACCOUNT_003", "동일한 계좌로 이체할 수 없습니다."),
+    DUPLICATE_ACCOUNT_NAME(HttpStatus.CONFLICT, "ACCOUNT_004", "이미 존재하는 계좌 이름입니다."),
 
     // Savings Goal (저축 목표 관련)
     SAVINGS_GOAL_NOT_FOUND(HttpStatus.NOT_FOUND, "GOAL_001", "저축 목표를 찾을 수 없습니다."),

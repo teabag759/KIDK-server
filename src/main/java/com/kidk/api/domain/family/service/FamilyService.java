@@ -53,7 +53,7 @@ public class FamilyService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Family family = familyRepository.findByInviteCode(inviteCode)
-                .orElseThrow(() -> new RuntimeException("Invalid invite code"));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INVITE_CODE));
 
         // 초대 코드 만료 체크 (생성 후 7일)
         if (family.getCreatedAt().plusDays(7).isBefore(LocalDateTime.now())) {
@@ -62,7 +62,7 @@ public class FamilyService {
 
         // 이미 가입된 멤버인지 확인
         if (familyMemberRepository.findByFamilyAndUser(family, user).isPresent()) {
-            throw new RuntimeException("Already a member of this family");
+            throw new CustomException(ErrorCode.ALREADY_IN_FAMILY);
         }
 
         // 주 보호자 찾기(초대자 기록용)
