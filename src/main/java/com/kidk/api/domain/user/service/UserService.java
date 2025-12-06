@@ -89,16 +89,16 @@ public class UserService {
     public void withdraw(String firebaseUid) {
         User user = findUserByUid(firebaseUid);
 
-        user.setStatus("WITHDRAWN");
-        user.setStatusChangedAt(LocalDateTime.now());
+        user.changeStatus("WITHDRAWN");
+        user.updateLastLogin();
     }
 
     // 사용자 상태 변경 (관리자용 혹은 특정 로직용)
     @Transactional
     public void updateStatus(String firebaseUid, String newStatus) {
         User user = findUserByUid(firebaseUid);
-        user.setStatus(newStatus);
-        user.setStatusChangedAt(LocalDateTime.now());
+        user.changeStatus(newStatus);
+        user.updateLastLogin();
     }
 
     // 헬퍼 메서드: UID로 유저 찾기

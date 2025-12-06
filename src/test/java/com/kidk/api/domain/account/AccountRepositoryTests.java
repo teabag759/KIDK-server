@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class AccountRepositoryTest {
+class AccountRepositoryTests {
 
     @Autowired
     private AccountRepository accountRepository;

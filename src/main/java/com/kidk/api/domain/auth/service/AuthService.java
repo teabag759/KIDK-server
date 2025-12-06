@@ -25,6 +25,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final JwtProvider jwtProvider;
 
+    /// 로그인/회원가입
     public AuthResponse loginOrRegister(AuthRequest request) {
         String firebaseUid;
         String email;

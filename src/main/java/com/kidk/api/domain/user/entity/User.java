@@ -66,4 +66,20 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
+
+    /// 상태 변경
+    public void changeStatus(String newStatus) {
+        // 이미 같은 상태라면 변경하지 않음 (선택 사항)
+        if (this.status.equals(newStatus)) {
+            return;
+        }
+
+        this.status = newStatus;
+        this.statusChangedAt = LocalDateTime.now(); // 상태 변경 시점 자동 기록
+    }
+
+    // 로그인 시점 업데이트
+    public void updateLastLogin() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
 }
