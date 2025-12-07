@@ -10,9 +10,10 @@ import com.kidk.api.domain.user.entity.User;
 import com.kidk.api.domain.user.repository.UserRepository;
 import com.kidk.api.global.exception.CustomException;
 import com.kidk.api.global.exception.ErrorCode;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
