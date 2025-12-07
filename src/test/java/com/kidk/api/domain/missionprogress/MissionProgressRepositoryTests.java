@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class MissionProgressRepositoryTest {
+class MissionProgressRepositoryTests {
 
     @Autowired private MissionRepository missionRepository;
     @Autowired private MissionProgressRepository progressRepository;

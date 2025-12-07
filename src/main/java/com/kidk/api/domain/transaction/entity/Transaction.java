@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Table(
         name = "transactions",
         indexes = {
-                @Index(name = "idx_account_id", columnList = "account_id"),
-                @Index(name = "idx_created_at", columnList = "created_at"),
-                @Index(name = "idx_category", columnList = "category")
+                @Index(name = "idx_transactions_account_id", columnList = "account_id"),
+                @Index(name = "idx_transactions_created_at", columnList = "created_at"),
+                @Index(name = "idx_transactions_category", columnList = "category")
         }
 )
 @Getter

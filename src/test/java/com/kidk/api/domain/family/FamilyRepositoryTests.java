@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class FamilyRepositoryTest {
+class FamilyRepositoryTests {
 
     @Autowired
     private FamilyRepository familyRepository;

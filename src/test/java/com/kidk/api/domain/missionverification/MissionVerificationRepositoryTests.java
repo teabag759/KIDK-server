@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-class MissionVerificationRepositoryTest {
+class MissionVerificationRepositoryTests {
 
     @Autowired
     private MissionVerificationRepository verificationRepository;

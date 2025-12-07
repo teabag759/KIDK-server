@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class MissionServiceTest {
+class MissionServiceTests {
 
     @Autowired
     private MissionService missionService;

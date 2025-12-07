@@ -54,6 +54,7 @@ public class SavingsGoalService {
     }
 
     /// 금액 추가 및 달성 체크 로직
+    @Transactional
     public SavingsGoal addAmount(Long goalId, BigDecimal amount) {
         SavingsGoal goal = getGoal(goalId);
 
