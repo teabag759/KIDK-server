@@ -1,7 +1,7 @@
 package com.kidk.api.security;
 
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

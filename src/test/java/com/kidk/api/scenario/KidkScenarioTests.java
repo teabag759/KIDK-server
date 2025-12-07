@@ -1,19 +1,19 @@
 package com.kidk.api.scenario;
 
-import com.kidk.api.domain.account.Account;
-import com.kidk.api.domain.account.AccountRepository;
-import com.kidk.api.domain.account.AccountService;
-import com.kidk.api.domain.family.Family;
-import com.kidk.api.domain.family.FamilyService;
-import com.kidk.api.domain.mission.Mission;
-import com.kidk.api.domain.mission.MissionRequest;
-import com.kidk.api.domain.mission.MissionService;
-import com.kidk.api.domain.missionverification.MissionVerification;
-import com.kidk.api.domain.missionverification.MissionVerificationService;
-import com.kidk.api.domain.transaction.Transaction;
-import com.kidk.api.domain.transaction.TransactionService;
-import com.kidk.api.domain.user.User;
-import com.kidk.api.domain.user.UserRepository;
+import com.kidk.api.domain.account.entity.Account;
+import com.kidk.api.domain.account.repository.AccountRepository;
+import com.kidk.api.domain.account.service.AccountService;
+import com.kidk.api.domain.family.entity.Family;
+import com.kidk.api.domain.family.service.FamilyService;
+import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.dto.MissionRequest;
+import com.kidk.api.domain.mission.service.MissionService;
+import com.kidk.api.domain.missionverification.entity.MissionVerification;
+import com.kidk.api.domain.missionverification.service.MissionVerificationService;
+import com.kidk.api.domain.transaction.entity.Transaction;
+import com.kidk.api.domain.transaction.service.TransactionService;
+import com.kidk.api.domain.user.entity.User;
+import com.kidk.api.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional // 테스트 후 데이터 롤백
+@Transactional
 public class KidkScenarioTests {
 
     @Autowired private UserRepository userRepository;
@@ -47,10 +47,21 @@ public class KidkScenarioTests {
         // 1. 사용자 준비 (부모 1명, 자녀 1명)
         // ==========================================
         User parent = userRepository.save(User.builder()
-                .firebaseUid("parent_uid").email("parent@test.com").name("아빠").userType("PARENT").status("ACTIVE").build());
+                .firebaseUid("parent_uid")
+                .email("parent@test.com")
+                .name("아빠")
+                .userType("PARENT")
+                .status("ACTIVE")
+                .build());
 
         User child = userRepository.save(User.builder()
-                .firebaseUid("child_uid").email("child@test.com").name("아들").userType("CHILD").status("ACTIVE").build());
+                .firebaseUid("child_uid")
+                .email("child@test.com")
+                .name("아들")
+                .userType("CHILD")
+                .status("ACTIVE")
+                .build());
+
 
         System.out.println("1. 사용자 생성 완료");
 
@@ -68,12 +79,26 @@ public class KidkScenarioTests {
         // 3. 계좌 개설 및 초기 자금 충전
         // ==========================================
         // 부모 계좌 생성
-        Account parentAccount = accountService.createAccount(parent.getId(), "CHECKING", "부모월급통장", BigDecimal.ZERO);
+        Account parentAccount = accountService.createAccount(
+                parent.getId(),
+                "CHECKING",
+                "부모월급통장",
+                BigDecimal.ZERO);
         // 자녀 계좌 생성 (주 계좌 설정됨)
-        Account childAccount = accountService.createAccount(child.getId(), "SPENDING", "자녀용돈통장", BigDecimal.ZERO);
+        Account childAccount = accountService.createAccount(
+                child.getId(),
+                "SPENDING",
+                "자녀용돈통장",
+                BigDecimal.ZERO);
 
         // 부모 계좌에 10만원 입금 (외부 입금 가정)
-        transactionService.createTransaction(parentAccount.getId(), "DEPOSIT", new BigDecimal("100000"), "월급", "입금", null);
+        transactionService.createTransaction(
+                parentAccount.getId(),
+                "DEPOSIT",
+                new BigDecimal("100000"),
+                "월급",
+                "입금",
+                null);
 
         // 확인
         assertThat(accountRepository.findById(parentAccount.getId()).get().getBalance()).isEqualByComparingTo("100000");
@@ -138,5 +163,111 @@ public class KidkScenarioTests {
 
         assertThat(hasRewardTx).isTrue();
         System.out.println("7. 보상금 입금 확인 완료 (최종 잔액: " + finalChildAccount.getBalance() + ")");
+    }
+    
+
+    @Test
+    @DisplayName("특정 자녀(Owner)의 미션 목록 조회 테스트")
+    void getMissionsForOwner() {
+        // 1. 사용자 준비
+        User creator = userRepository.save(User.builder().firebaseUid("p2").email("p2@test.com").userType("PARENT").name("부모2").status("ACTIVE").build());
+        User owner = userRepository.save(User.builder().firebaseUid("c2").email("c2@test.com").userType("CHILD").name("자녀2").status("ACTIVE").build());
+
+        // 2. 미션 2개 생성
+        createMockMission(creator, owner, "미션1");
+        createMockMission(creator, owner, "미션2");
+
+        // 3. 자녀 ID로 조회
+        var missions = missionService.getMissionsForOwner(owner.getId());
+
+        // 4. 검증
+        assertThat(missions).hasSize(2);
+        assertThat(missions).extracting("title")
+                .containsExactlyInAnyOrder("미션1", "미션2");
+    }
+
+    @Test
+    @DisplayName("부모(Creator)가 생성한 미션 목록 조회 테스트")
+    void getMissionsCreatedBy() {
+        // 1. 사용자 준비
+        User creator = userRepository.save(User.builder().firebaseUid("p3").email("p3@test.com").userType("PARENT").name("부모3").status("ACTIVE").build());
+        User owner = userRepository.save(User.builder().firebaseUid("c3").email("c3@test.com").userType("CHILD").name("자녀3").status("ACTIVE").build());
+
+        // 2. 미션 생성
+        createMockMission(creator, owner, "부모가 만든 미션");
+
+        // 3. 부모 ID로 조회
+        var missions = missionService.getMissionsCreatedBy(creator.getId());
+
+        // 4. 검증
+        assertThat(missions).hasSize(1);
+        assertThat(missions.get(0).getCreator().getId()).isEqualTo(creator.getId());
+    }
+
+    @Test
+    @DisplayName("미션 완료 실패 - 자녀의 주 계좌가 없는 경우 예외 발생")
+    void completeMission_Fail_NoAccount() {
+        // 1. 유저 생성 (계좌 생성 안 함)
+        User creator = userRepository.save(User.builder().firebaseUid("p4").email("p4@test.com").userType("PARENT").name("부모4").status("ACTIVE").build());
+        User owner = userRepository.save(User.builder().firebaseUid("c4").email("c4@test.com").userType("CHILD").name("자녀4").status("ACTIVE").build());
+
+        // 2. 미션 생성
+        MissionRequest request = MissionRequest.builder()
+                .creatorId(creator.getId())
+                .ownerId(owner.getId())
+                .missionType("STUDY")
+                .title("공부하기")
+                .rewardAmount(new BigDecimal("500"))
+                .status("IN_PROGRESS")
+                .build();
+        Mission mission = missionService.createMission(request);
+
+        // 3. 완료 시도 및 검증 (계좌가 없으므로 실패해야 함)
+        // RuntimeException 혹은 CustomException이 발생할 것으로 예상
+        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+                missionService.completeMission(mission.getId())
+        ).isInstanceOf(RuntimeException.class);
+        // 실제 코드에서 Primary account not found 시 던지는 예외 타입에 맞춰 수정 필요
+    }
+
+    @Test
+    @DisplayName("미션 완료 실패 - 이미 완료된 미션 중복 완료 시도")
+    void completeMission_Fail_AlreadyCompleted() {
+        // 1. 유저 및 계좌 생성
+        User creator = userRepository.save(User.builder().firebaseUid("p5").email("p5@test.com").userType("PARENT").name("부모5").status("ACTIVE").build());
+        User owner = userRepository.save(User.builder().firebaseUid("c5").email("c5@test.com").userType("CHILD").name("자녀5").status("ACTIVE").build());
+
+        accountRepository.save(Account.builder()
+                .user(owner).accountType("SPENDING").accountName("지갑")
+                .balance(BigDecimal.ZERO).active(true).primary(true).build());
+
+        // 2. 미션 생성 및 1회 완료
+        MissionRequest request = MissionRequest.builder()
+                .creatorId(creator.getId()).ownerId(owner.getId()).missionType("ETC")
+                .title("중복테스트").rewardAmount(BigDecimal.TEN).status("IN_PROGRESS").build();
+        Mission mission = missionService.createMission(request);
+        missionService.completeMission(mission.getId());
+
+        // 3. 중복 완료 시도 및 검증
+        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
+                missionService.completeMission(mission.getId())
+        ).hasMessageContaining("이미 완료된 미션");
+        // 혹은 CustomException 클래스 체크: .isInstanceOf(CustomException.class)
+    }
+
+    // 테스트 헬퍼 메서드
+    private void createMockMission(User creator, User owner, String title) {
+        MissionRequest request = MissionRequest.builder()
+                .creatorId(creator.getId())
+                .ownerId(owner.getId())
+                .missionType("SAVING")
+                .title(title)
+                .description("테스트 설명")
+                .targetAmount(new BigDecimal("10000"))
+                .rewardAmount(new BigDecimal("500"))
+                .status("IN_PROGRESS")
+                .targetDate(LocalDate.now().plusDays(3))
+                .build();
+        missionService.createMission(request);
     }
 }

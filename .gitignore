@@ -42,7 +42,7 @@ logs/
 *.sql
 
 ### Environment files (never commit) ###
-application.yml
+#application.yml
 application-local.yml
 application-dev.yml
 application-prod.yml
