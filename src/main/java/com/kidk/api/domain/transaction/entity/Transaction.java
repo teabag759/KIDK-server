@@ -8,7 +8,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
+@Table(
+        name = "transactions",
+        indexes = {
+                @Index(name = "idx_account_id", columnList = "account_id"),
+                @Index(name = "idx_created_at", columnList = "created_at"),
+                @Index(name = "idx_category", columnList = "category")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +34,6 @@ public class Transaction {
 
     @Column(name = "transaction_type", nullable = false, length = 20)
     private String transactionType;
-
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;

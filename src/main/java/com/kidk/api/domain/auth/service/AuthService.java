@@ -8,6 +8,8 @@ import com.kidk.api.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.kidk.api.domain.refreshtoken.service.RefreshTokenService;
 import com.kidk.api.domain.user.entity.User;
 import com.kidk.api.domain.user.repository.UserRepository;
+import com.kidk.api.global.exception.CustomException;
+import com.kidk.api.global.exception.ErrorCode;
 import com.kidk.api.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class AuthService {
 
         } catch (Exception e) {
             log.error("Firebase Token Verification Failed", e);
-            throw new RuntimeException("Invalid Firebase Token");
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         // 2. 유저 조회 또는 회원가입 (없으면 생성)
