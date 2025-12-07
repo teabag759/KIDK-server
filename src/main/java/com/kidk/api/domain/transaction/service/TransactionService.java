@@ -6,16 +6,16 @@ import com.kidk.api.domain.transaction.entity.Transaction;
 import com.kidk.api.domain.transaction.repository.TransactionRepository;
 import com.kidk.api.global.exception.CustomException;
 import com.kidk.api.global.exception.ErrorCode;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -27,6 +27,7 @@ public class TransactionService {
     }
 
     // 거래 생성
+    @Transactional
     public Transaction createTransaction(
             Long accountId,
             String type,
@@ -91,6 +92,7 @@ public class TransactionService {
         // 출금 처리 (보내는 사람)
         BigDecimal fromNewBalance = fromAccount.getBalance().subtract(amount);
         fromAccount.setBalance(fromNewBalance);
+        accountRepository.save(fromAccount);
 
         Transaction withdrawTx = Transaction.builder()
                 .account(fromAccount)
@@ -105,6 +107,7 @@ public class TransactionService {
         // 입금 처리 (받는 사람)
         BigDecimal toNewBalance = toAccount.getBalance().add(amount);
         toAccount.setBalance(toNewBalance);
+        accountRepository.save(toAccount);
 
         Transaction depositTx = Transaction.builder()
                 .account(toAccount)

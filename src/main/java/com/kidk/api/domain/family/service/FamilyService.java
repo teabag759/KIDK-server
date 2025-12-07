@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FamilyService {
 
     private final FamilyRepository familyRepository;
@@ -24,6 +25,7 @@ public class FamilyService {
     private final FamilyMemberRepository familyMemberRepository;
 
     // 1. 가족 생성 (부모)
+    @Transactional
     public Family createFamily(Long userId, String familyName) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -48,6 +50,7 @@ public class FamilyService {
     }
 
     // 2. 가족 가입(자녀/배우자) - 초대 코드 입력
+    @Transactional
     public FamilyMember joinFamily(Long userId, String inviteCode) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -86,12 +89,10 @@ public class FamilyService {
     }
 
     // 조회 로직들
-    @Transactional(readOnly = true)
     public List<Family> findAll() {
         return familyRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public Family findById(Long id) {
         return familyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Family Not Found"));
