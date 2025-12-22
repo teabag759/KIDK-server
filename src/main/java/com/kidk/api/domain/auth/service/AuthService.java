@@ -68,8 +68,6 @@ public class AuthService {
 
         refreshTokenService.saveOrUpdate(user, refreshTokenStr, request.getDeviceId());
 
-
-
         // 5. 응답 반환
         return AuthResponse.builder()
                 .accessToken(accessToken)

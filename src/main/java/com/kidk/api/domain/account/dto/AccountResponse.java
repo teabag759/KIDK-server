@@ -1,6 +1,8 @@
 package com.kidk.api.domain.account.dto;
 
 import com.kidk.api.domain.account.entity.Account;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -8,6 +10,8 @@ import java.math.BigDecimal;
 
 @Getter
 @ToString
+@AllArgsConstructor
+@Builder
 public class AccountResponse {
     private final Long id;
     private final Long userId;
@@ -26,5 +30,16 @@ public class AccountResponse {
         this.balance = account.getBalance();
         this.active = account.isActive();
         this.primary = account.getPrimary() != null && account.getPrimary();
+    }
+
+    // AccountResponse.java 내부
+    public static AccountResponse from(Account account) {
+        return AccountResponse.builder()
+                .id(account.getId())
+                .accountName(account.getAccountName())
+                .balance(account.getBalance())
+                .accountType(account.getAccountType())
+                // ... 필요한 필드들 매핑
+                .build();
     }
 }
