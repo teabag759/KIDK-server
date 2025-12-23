@@ -2,7 +2,7 @@ name: KIDK Server Deploy
 
 on:
   push:
-    branches: [ "main" ] # main 브랜치에 올리면 발동!
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            # 서버 정보 확인 (이 한 줄만 추가하세요!)
+            # 서버 정보 확인 
             cat /etc/os-release
             
             # 현재 실행 중인 자바 서버 종료 (없으면 패스)
