@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
 
@@ -30,18 +31,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         http
-                // 1. CSRF 비활성화 (REST API이므로 불필요)
+                // CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
-                // 2. 폼 로그인 비활성화
+                // CORS 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // 폼 로그인 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)
-                // 3. HTTP Basic 인증 비활성화
+                // HTTP Basic 인증 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // 4. 세션 사용 안 함 (Stateless)
+                // 세션 사용 안 함 (Stateless)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 5. URL별 권한 관리
+                // URL별 권한 관리
                 .authorizeHttpRequests(auth -> auth
                         // 로그인, 회원가입, Swagger 문서는 인증 없이 접근 허용
                         .requestMatchers(
@@ -55,9 +58,28 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // 6. JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+                // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // CORS 허용 설정
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 프론트엔드 주소 허용
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        // 허용할 HTTP 메서드
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        // 허용할 헤더
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        // 자격 증명 허용
+        configuration.setAllowCredentials(true);
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
