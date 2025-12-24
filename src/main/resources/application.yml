@@ -4,12 +4,17 @@ spring:
   profiles:
     active: default  # 기본 프로필
   datasource:
-    url: jdbc:h2:file:./db/kidkdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    # 환경변수(${...})가 있으면 그걸 쓰고, 없으면 기본값(H2)을 씁니다.
+    url: ${DB_URL:jdbc:h2:file:./db/kidkdb;MODE=MySQL}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
     defer-datasource-initialization: true
+    # MySQL 방언 설정
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
