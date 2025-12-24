@@ -4,7 +4,7 @@ spring:
   profiles:
     active: default  # 기본 프로필
   datasource:
-    # 환경변수(${...})가 있으면 그걸 쓰고, 없으면 기본값(H2)을 씁니다.
+    # 환경변수(${...})가 있으면 그걸 쓰고, 없으면 기본값(H2)을 쓰기
     url: ${DB_URL:jdbc:h2:file:./db/kidkdb;MODE=MySQL}
     driver-class-name: ${DB_DRIVER:org.h2.Driver}
     username: ${DB_USERNAME:sa}
@@ -18,3 +18,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  cloud:
+    aws:
+      s3:
+        bucket: kidk-bucket  # 아까 만든 버킷 이름
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: ${S3_ACCESS_KEY}
+        secret-key: ${S3_SECRET_KEY}
+      stack:
+        auto: false
