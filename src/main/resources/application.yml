@@ -4,12 +4,36 @@ spring:
   profiles:
     active: default  # 기본 프로필
   datasource:
-    url: jdbc:h2:file:./db/kidkdb;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    # 환경변수(${...})가 있으면 그걸 쓰고, 없으면 기본값(H2)을 쓰기
+    url: ${DB_URL:jdbc:h2:file:./db/kidkdb;MODE=MySQL}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
     defer-datasource-initialization: true
+    # MySQL 방언 설정
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  cloud:
+    aws:
+      s3:
+        bucket: kidk-bucket
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: ${S3_ACCESS_KEY}
+        secret-key: ${S3_SECRET_KEY}
+      stack:
+        auto: false
+
+# Swagger 설정
+# TODO: 배포전에는 반드시 활성화!!!!
+#  springdoc:
+#    api-docs:
+#      enabled: false
+#    swagger-ui:
+#      enabled: false

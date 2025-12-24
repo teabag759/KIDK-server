@@ -16,6 +16,9 @@ public enum ErrorCode {
     // User (사용자 관련)
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "사용자를 찾을 수 없습니다."),
     DUPLICATE_USER(HttpStatus.CONFLICT, "USER_002", "이미 존재하는 사용자입니다."),
+    FAIL_TO_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "USER_003", "이미지를 업로드할 수 없습니다."),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "USER_004", "지원하지 않는 파일 형식입니다.(jpg, png, webp만 가능)"),
+    INVALID_FILE_SIZE(HttpStatus.BAD_REQUEST, "USER_005", "파일 크기는 5MB를 초과할 수 없습니다"),
 
     // Family (가족 관련)
     FAMILY_NOT_FOUND(HttpStatus.NOT_FOUND, "FAMILY_001", "가족 정보를 찾을 수 없습니다."),
