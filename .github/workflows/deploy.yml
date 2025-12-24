@@ -69,4 +69,4 @@ jobs:
             -DDB_DRIVER="com.mysql.cj.jdbc.Driver" \
             -DS3_ACCESS_KEY="${{ secrets.S3_ACCESS_KEY }}" \
             -DS3_SECRET_KEY="${{ secrets.S3_SECRET_KEY }}" \
-            /home/${{ secrets.EC2_USERNAME }}/kidk-server/build/libs/kidk-api-0.0.1-SNAPSHOT.jar > ./app.log 2>&1 &
+            $(find /home/${{ secrets.EC2_USERNAME }}/kidk-server/build/libs -name "*.jar" | head -n 1) > ./app.log 2>&1 &
