@@ -21,7 +21,7 @@ spring:
   cloud:
     aws:
       s3:
-        bucket: kidk-bucket  # 아까 만든 버킷 이름
+        bucket: kidk-bucket
       region:
         static: ap-northeast-2
       credentials:
@@ -29,3 +29,11 @@ spring:
         secret-key: ${S3_SECRET_KEY}
       stack:
         auto: false
+
+# Swagger 설정
+# TODO: 배포전에는 반드시 활성화!!!!
+#  springdoc:
+#    api-docs:
+#      enabled: false
+#    swagger-ui:
+#      enabled: false
