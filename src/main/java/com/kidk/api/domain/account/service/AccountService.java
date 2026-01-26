@@ -35,13 +35,13 @@ public class AccountService {
     public Account getPrimaryAccount(Long userId) {
         return accountRepository
                 .findByUserIdAndPrimary(userId, true)
-                .orElseThrow(() -> new RuntimeException("Primary account not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
     }
 
     // 단일 계좌 조회 - 보안: userId도 함께 체크
     public Account getAccountById(Long accountId, Long userId) {
         return accountRepository.findByIdAndUserId(accountId, userId)
-                .orElseThrow(() -> new RuntimeException("Account not found or access denied"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
     }
 
     // 계좌 생성
