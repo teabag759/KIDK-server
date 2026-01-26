@@ -26,7 +26,7 @@ public class TransactionService {
         return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId);
     }
 
-    // 거래 생성
+    // 거래 생성 (동시성 제어 적용)
     @Transactional
     public Transaction createTransaction(
             Long accountId,
@@ -34,9 +34,9 @@ public class TransactionService {
             BigDecimal amount,
             String category,
             String description,
-            Long relatedMissionId
-    ) {
-        Account account = accountRepository.findById(accountId)
+            Long relatedMissionId) {
+        // 비관적 락으로 계좌 조회 (동시성 제어)
+        Account account = accountRepository.findByIdWithLock(accountId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         // 잔액 검증 (출금 시)
@@ -69,7 +69,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    // 계좌 이체 (Transfer)
+    // 계좌 이체 (Transfer) - 동시성 제어 적용
     @Transactional
     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount, String description) {
         // 본인 계좌 이체 방지
@@ -77,12 +77,19 @@ public class TransactionService {
             throw new CustomException(ErrorCode.SAME_ACCOUNT_TRANSFER);
         }
 
-        // 계좌 조회
-        Account fromAccount = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
-
-        Account toAccount = accountRepository.findById(toAccountId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+        // 계좌 조회 (비관적 락 적용 - 데드락 방지를 위해 ID 순서대로 락 획득)
+        Account fromAccount, toAccount;
+        if (fromAccountId < toAccountId) {
+            fromAccount = accountRepository.findByIdWithLock(fromAccountId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+            toAccount = accountRepository.findByIdWithLock(toAccountId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+        } else {
+            toAccount = accountRepository.findByIdWithLock(toAccountId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+            fromAccount = accountRepository.findByIdWithLock(fromAccountId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+        }
 
         // 잔액 확인
         if (fromAccount.getBalance().compareTo(amount) < 0) {

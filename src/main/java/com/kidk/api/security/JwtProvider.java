@@ -20,8 +20,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    // application.yml에 jwt.secret 설정이 없으면 기본값을 사용
-    @Value("${jwt.secret:kidk_secret_key_must_be_over_256_bits_length_for_security_please_change_it}")
+    // JWT Secret Key는 반드시 환경 변수로 설정해야 함 (최소 256비트)
+    @Value("${jwt.secret}")
     private String secretKey;
 
     private Key key;
@@ -32,7 +32,20 @@ public class JwtProvider {
 
     @PostConstruct
     protected void init() {
+        // Secret Key 검증
+        if (secretKey == null || secretKey.trim().isEmpty()) {
+            throw new IllegalStateException(
+                    "JWT secret key must be configured in application.yml or environment variables");
+        }
+
+        // 최소 길이 검증 (256비트 = 32바이트)
+        if (secretKey.getBytes().length < 32) {
+            throw new IllegalStateException(
+                    "JWT secret key must be at least 256 bits (32 characters) long");
+        }
+
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        log.info("JWT Provider initialized successfully");
     }
 
     // 1. Access Token 생성
