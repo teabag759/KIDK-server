@@ -63,6 +63,7 @@ jobs:
             # 새 서버 시작 
             # DB 정보와 드라이버 정보를 환경변수로 주입 (-D옵션)
             nohup java -jar \
+            -DJWT_SECRET="${{ secrets.JWT_SECRET }}" \
             -DDB_URL="${{ secrets.DB_URL }}" \
             -DDB_USERNAME="${{ secrets.DB_USERNAME }}" \
             -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
