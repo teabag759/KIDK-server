@@ -34,7 +34,7 @@ public class DevAuthController {
                         .build()));
 
         // JWT 강제 발급(검증 생략)
-        String accessToken = jwtProvider.createAccessToken(user.getFirebaseUid(), user.getUserType());
+        String accessToken = jwtProvider.createAccessToken(user.getFirebaseUid(), user.getUserType(), user.getId());
         String refreshToken = jwtProvider.createRefreshToken(user.getFirebaseUid());
 
         ApiResponse<AuthResponse> response = ApiResponse.success(AuthResponse.builder()

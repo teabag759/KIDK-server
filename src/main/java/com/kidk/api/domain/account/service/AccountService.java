@@ -31,11 +31,78 @@ public class AccountService {
         return accountRepository.findByUserIdAndActive(userId, true);
     }
 
-    // 특정 유저의 primary 계좌 조회 (없을 수 있어서 Optional 처리)
+    // 주 계좌 조회
     public Account getPrimaryAccount(Long userId) {
-        return accountRepository
-                .findByUserIdAndPrimary(userId, true)
+        return accountRepository.findByUserIdAndPrimaryTrue(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
+    }
+
+    // 계좌 수정 (별칭)
+    @Transactional
+    public Account updateAccount(Long accountId, Long userId, String newAccountName) {
+        Account account = getAccountById(accountId, userId);
+        account.setAccountName(newAccountName);
+        return accountRepository.save(account);
+    }
+
+    // 계좌 비활성화
+    @Transactional
+    public void deactivateAccount(Long accountId, Long userId) {
+        Account account = getAccountById(accountId, userId);
+
+        // 주 계좌는 비활성화 불가
+        if (Boolean.TRUE.equals(account.getPrimary())) {
+            throw new CustomException(ErrorCode.CANNOT_DEACTIVATE_PRIMARY_ACCOUNT);
+        }
+
+        account.setActive(false);
+        accountRepository.save(account);
+    }
+
+    // 주 계좌 지정
+    @Transactional
+    public Account setPrimaryAccount(Long accountId, Long userId) {
+        // 기존 주 계좌 해제
+        accountRepository.findByUserIdAndPrimaryTrue(userId)
+                .ifPresent(account -> {
+                    account.setPrimary(false);
+                    accountRepository.save(account);
+                });
+
+        // 새 주 계좌 지정
+        Account account = getAccountById(accountId, userId);
+        account.setPrimary(true);
+        return accountRepository.save(account);
+    }
+
+    // 입금
+    @Transactional
+    public void deposit(Long accountId, Long userId, java.math.BigDecimal amount, String description) {
+        Account account = getAccountById(accountId, userId);
+
+        if (!account.isActive()) {
+            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+    }
+
+    // 출금
+    @Transactional
+    public void withdraw(Long accountId, Long userId, java.math.BigDecimal amount, String description) {
+        Account account = getAccountById(accountId, userId);
+
+        if (!account.isActive()) {
+            throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new CustomException(ErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
     }
 
     // 단일 계좌 조회 - 보안: userId도 함께 체크

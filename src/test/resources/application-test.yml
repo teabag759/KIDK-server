@@ -1,12 +1,26 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
   flyway:
     enabled: false
+
+# JWT 테스트용 설정
+jwt:
+  secret: test-secret-key-for-testing-purpose-must-be-at-least-64-characters-long-to-work-properly-with-hs512
+  access-token-validity: 3600000
+  refresh-token-validity: 86400000
+
+# Firebase 테스트용 설정 (실제로 사용하지 않지만 bean 생성을 위해 필요)
+firebase:
+  service-account-key: test/path/to/serviceAccountKey.json

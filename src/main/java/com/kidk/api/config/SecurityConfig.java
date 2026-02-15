@@ -2,9 +2,12 @@ package com.kidk.api.config;
 
 import com.kidk.api.security.JwtAuthenticationFilter;
 import com.kidk.api.security.JwtProvider;
+import com.kidk.api.global.filter.RateLimitFilter;
+import com.kidk.api.global.filter.RequestResponseLoggingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +25,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
+    @Value("${security.require-https:true}")
+    private boolean requireHttps;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -29,11 +34,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource)
+    public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource,
+            RateLimitFilter rateLimitFilter,
+            RequestResponseLoggingFilter requestResponseLoggingFilter)
             throws Exception {
         http
                 // CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
+                // HTTPS 강제 (환경 설정으로 제어)
+                .requiresChannel(channel -> {
+                    if (requireHttps) {
+                        channel.anyRequest().requiresSecure();
+                    }
+                })
                 // CORS 설정 추가
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 // 폼 로그인 비활성화
@@ -47,8 +60,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 로그인, 회원가입, Swagger 문서는 인증 없이 접근 허용
                         .requestMatchers(
-                                // "/api/v1/**",
-                                "/api/v1/auth/**",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/refresh",
+                                "/api/v1/auth/dev/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**")
@@ -57,9 +72,22 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
 
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(requestResponseLoggingFilter, RateLimitFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public RateLimitFilter rateLimitFilter(
+            @Value("${security.rate-limit.per-minute:60}") int maxRequestsPerMinute) {
+        return new RateLimitFilter(maxRequestsPerMinute);
+    }
+
+    @Bean
+    public RequestResponseLoggingFilter requestResponseLoggingFilter() {
+        return new RequestResponseLoggingFilter();
     }
 
     // CORS 허용 설정

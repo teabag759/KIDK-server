@@ -2,6 +2,7 @@ package com.kidk.api.domain.familymember.controller;
 
 import com.kidk.api.domain.familymember.service.FamilyMemberService;
 import com.kidk.api.domain.familymember.entity.FamilyMember;
+import com.kidk.api.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,25 +17,25 @@ public class FamilyMemberController {
 
     /// 전체 조회 (테스트용)
     @GetMapping
-    public List<FamilyMember> getAllFamilyMembers() {
-        return familyMemberService.findAll();
+    public ApiResponse<List<FamilyMember>> getAllFamilyMembers() {
+        return ApiResponse.success(familyMemberService.findAll());
     }
 
     /// 단일 조회
     @GetMapping("/{id}")
-    public FamilyMember getFamilyMember(@PathVariable Long id) {
-        return familyMemberService.findById(id);
+    public ApiResponse<FamilyMember> getFamilyMember(@PathVariable Long id) {
+        return ApiResponse.success(familyMemberService.findById(id));
     }
 
     /// 가족 기준 조회
     @GetMapping("/family/{familyId}")
-    public List<FamilyMember> getFamilyMembersByFamily(@PathVariable Long familyId) {
-        return familyMemberService.findByFamilyId(familyId);
+    public ApiResponse<List<FamilyMember>> getFamilyMembersByFamily(@PathVariable Long familyId) {
+        return ApiResponse.success(familyMemberService.findByFamilyId(familyId));
     }
 
     /// 유저 기준 조회
     @GetMapping("/user/{userId}")
-    public List<FamilyMember> getFamilyMembersByUser(@PathVariable Long userId) {
-        return familyMemberService.findByUserId(userId);
+    public ApiResponse<List<FamilyMember>> getFamilyMembersByUser(@PathVariable Long userId) {
+        return ApiResponse.success(familyMemberService.findByUserId(userId));
     }
 }

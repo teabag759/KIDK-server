@@ -29,10 +29,10 @@ public class MissionService {
     // 미션 생성
     public Mission createMission(MissionRequest request) {
         User creator = userRepository.findById(request.getCreatorId())
-                .orElseThrow(() -> new RuntimeException("Creator not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         User owner = userRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new RuntimeException("Owner not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Mission mission = Mission.builder()
                 .creator(creator)
@@ -55,7 +55,7 @@ public class MissionService {
         Mission mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MISSION_NOT_FOUND));
 
-        if ("COMPLETED".equals(mission.getStatus())) {
+        if (mission.getStatus() == com.kidk.api.domain.mission.enums.MissionStatus.COMPLETED) {
             throw new CustomException(ErrorCode.ALREADY_COMPLETED_MISSION);
         }
 
@@ -71,8 +71,7 @@ public class MissionService {
                 mission.getRewardAmount(),
                 "MISSION_REWARD",
                 "미션 보상: " + mission.getTitle(),
-                mission.getId()
-        );
+                mission.getId());
 
         return missionRepository.save(mission);
     }
@@ -83,5 +82,62 @@ public class MissionService {
 
     public List<Mission> getMissionsCreatedBy(Long creatorId) {
         return missionRepository.findByCreatorId(creatorId);
+    }
+
+    // 미션 단건 조회
+    public Mission getMission(Long missionId) {
+        return missionRepository.findById(missionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MISSION_NOT_FOUND));
+    }
+
+    // 모든 미션 조회 (필터링 옵션)
+    public List<Mission> getAllMissions(Long ownerId, Long creatorId,
+            com.kidk.api.domain.mission.enums.MissionStatus status) {
+        // 필터링 로직
+        if (ownerId != null && status != null) {
+            return missionRepository.findByOwnerIdAndStatus(ownerId, status);
+        } else if (ownerId != null) {
+            return missionRepository.findByOwnerId(ownerId);
+        } else if (creatorId != null) {
+            return missionRepository.findByCreatorId(creatorId);
+        } else {
+            return missionRepository.findAll();
+        }
+    }
+
+    // 미션 수정
+    @Transactional
+    public Mission updateMission(Long missionId, MissionRequest request) {
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MISSION_NOT_FOUND));
+
+        // 업데이트 가능 필드
+        if (request.getTitle() != null) {
+            mission.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            mission.setDescription(request.getDescription());
+        }
+        if (request.getTargetAmount() != null) {
+            mission.setTargetAmount(request.getTargetAmount());
+        }
+        if (request.getRewardAmount() != null) {
+            mission.setRewardAmount(request.getRewardAmount());
+        }
+        if (request.getTargetDate() != null) {
+            mission.setTargetDate(request.getTargetDate());
+        }
+
+        return missionRepository.save(mission);
+    }
+
+    // 미션 취소
+    @Transactional
+    public void cancelMission(Long missionId) {
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MISSION_NOT_FOUND));
+
+        mission.setStatus(com.kidk.api.domain.mission.enums.MissionStatus.CANCELLED);
+        missionRepository.save(mission);
     }
 }
