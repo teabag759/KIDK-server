@@ -67,7 +67,11 @@ jobs:
             DB_USERNAME="${{ secrets.DB_USERNAME }}" \
             DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             S3_ACCESS_KEY="${{ secrets.S3_ACCESS_KEY }}" \
+            
             S3_SECRET_KEY="${{ secrets.S3_SECRET_KEY }}" \
+
+            # 추후 HTTPS 설정 
+            REQUIRE_HTTPS="false" \
             nohup java -jar \
             -DDB_DRIVER="com.mysql.cj.jdbc.Driver" \
             $(find /home/${{ secrets.EC2_USERNAME }}/kidk-server/build/libs -name "*.jar" ! -name "*plain.jar" | head -n 1) >> ./app.log 2>&1 &
