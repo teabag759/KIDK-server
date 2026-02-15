@@ -1,6 +1,8 @@
 package com.kidk.api.domain.missionverification;
 
 import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.enums.MissionStatus;
+import com.kidk.api.domain.mission.enums.MissionType;
 import com.kidk.api.domain.mission.repository.MissionRepository;
 import com.kidk.api.domain.missionverification.entity.MissionVerification;
 import com.kidk.api.domain.missionverification.repository.MissionVerificationRepository;
@@ -22,52 +24,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class MissionVerificationRepositoryTests {
 
-    @Autowired
-    private MissionVerificationRepository verificationRepository;
+        @Autowired
+        private MissionVerificationRepository verificationRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private MissionRepository missionRepository;
+        @Autowired
+        private MissionRepository missionRepository;
 
-    @Test
-    @DisplayName("미션 인증 생성 및 조회")
-    void createAndFind() {
-        User child = userRepository.save(
-                User.builder()
-                        .firebaseUid("child-123")
-                        .email("child@example.com")
-                        .name("아이")
-                        .userType("CHILD")
-                        .status("ACTIVE")
-                        .build()
-        );
+        @Test
+        @DisplayName("미션 인증 생성 및 조회")
+        void createAndFind() {
+                User child = userRepository.save(
+                                User.builder()
+                                                .firebaseUid("child-123")
+                                                .email("child@example.com")
+                                                .name("아이")
+                                                .userType("CHILD")
+                                                .status("ACTIVE")
+                                                .build());
 
-        Mission mission = missionRepository.save(
-                Mission.builder()
-                        .creator(child)
-                        .owner(child)
-                        .missionType("PHOTO")
-                        .title("테스트 미션")
-                        .rewardAmount(new java.math.BigDecimal("500"))
-                        .status("IN_PROGRESS")
-                        .build()
-        );
+                Mission mission = missionRepository.save(
+                                Mission.builder()
+                                                .creator(child)
+                                                .owner(child)
+                                                .missionType(MissionType.OTHER)
+                                                .title("테스트 미션")
+                                                .rewardAmount(new java.math.BigDecimal("500"))
+                                                .status(MissionStatus.ACTIVE)
+                                                .build());
 
-        MissionVerification saved = verificationRepository.save(
-                MissionVerification.builder()
-                        .mission(mission)
-                        .child(child)
-                        .verificationType("TEXT")
-                        .content("오늘 청소했어요!")
-                        .status("PENDING")
-                        .build()
-        );
+                MissionVerification saved = verificationRepository.save(
+                                MissionVerification.builder()
+                                                .mission(mission)
+                                                .child(child)
+                                                .verificationType("TEXT")
+                                                .content("오늘 청소했어요!")
+                                                .status("PENDING")
+                                                .build());
 
-        List<MissionVerification> list = verificationRepository.findByMissionId(mission.getId());
+                List<MissionVerification> list = verificationRepository.findByMissionId(mission.getId());
 
-        assertThat(list).hasSize(1);
-        assertThat(list.get(0).getContent()).isEqualTo("오늘 청소했어요!");
-    }
+                assertThat(list).hasSize(1);
+                assertThat(list.get(0).getContent()).isEqualTo("오늘 청소했어요!");
+        }
 }

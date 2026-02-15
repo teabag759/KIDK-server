@@ -15,6 +15,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     // 유저와 기기 ID로 조회 (기존 로그인 확인용)
     Optional<RefreshToken> findByUserAndDeviceId(User user, String deviceId);
 
+    List<RefreshToken> findByUser(User user);
+
     // 특정 유저의 모든 토큰 조회 (디바이스 개수 제한 확인용)
     List<RefreshToken> findByUserId(Long userId);
 

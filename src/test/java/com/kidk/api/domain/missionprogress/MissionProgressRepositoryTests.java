@@ -1,6 +1,8 @@
 package com.kidk.api.domain.missionprogress;
 
 import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.enums.MissionStatus;
+import com.kidk.api.domain.mission.enums.MissionType;
 import com.kidk.api.domain.mission.repository.MissionRepository;
 import com.kidk.api.domain.missionprogress.entity.MissionProgress;
 import com.kidk.api.domain.missionprogress.repository.MissionProgressRepository;
@@ -23,56 +25,54 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class MissionProgressRepositoryTests {
 
-    @Autowired private MissionRepository missionRepository;
-    @Autowired private MissionProgressRepository progressRepository;
-    @Autowired private UserRepository userRepository;
+        @Autowired
+        private MissionRepository missionRepository;
+        @Autowired
+        private MissionProgressRepository progressRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Test
-    @DisplayName("미션 진행률 저장 + 조회 테스트")
-    void saveAndFind() {
-        User parent = userRepository.save(
-                User.builder().firebaseUid("p1").email("p@test.com")
-                        .userType("PARENT").name("부모").status("ACTIVE").build()
-        );
+        @Test
+        @DisplayName("미션 진행률 저장 + 조회 테스트")
+        void saveAndFind() {
+                User parent = userRepository.save(
+                                User.builder().firebaseUid("p1").email("p@test.com")
+                                                .userType("PARENT").name("부모").status("ACTIVE").build());
 
-        User child = userRepository.save(
-                User.builder().firebaseUid("c1").email("c@test.com")
-                        .userType("CHILD").name("아이").status("ACTIVE").build()
-        );
+                User child = userRepository.save(
+                                User.builder().firebaseUid("c1").email("c@test.com")
+                                                .userType("CHILD").name("아이").status("ACTIVE").build());
 
-        Mission mission = missionRepository.save(
-                Mission.builder()
-                        .creator(parent)
-                        .owner(child)
-                        .missionType("SAVINGS")
-                        .title("10000 모으기")
-                        .rewardAmount(new BigDecimal("1000"))
-                        .status("IN_PROGRESS")
-                        .build()
-        );
+                Mission mission = missionRepository.save(
+                                Mission.builder()
+                                                .creator(parent)
+                                                .owner(child)
+                                                .missionType(MissionType.SAVINGS)
+                                                .title("10000 모으기")
+                                                .rewardAmount(new BigDecimal("1000"))
+                                                .status(MissionStatus.ACTIVE)
+                                                .build());
 
-        progressRepository.save(
-                MissionProgress.builder()
-                        .mission(mission)
-                        .user(child)
-                        .progressAmount(new BigDecimal("3000"))
-                        .progressPercentage(new BigDecimal("30"))
-                        .build()
-        );
+                progressRepository.save(
+                                MissionProgress.builder()
+                                                .mission(mission)
+                                                .user(child)
+                                                .progressAmount(new BigDecimal("3000"))
+                                                .progressPercentage(new BigDecimal("30"))
+                                                .build());
 
-        progressRepository.save(
-                MissionProgress.builder()
-                        .mission(mission)
-                        .user(child)
-                        .progressAmount(new BigDecimal("7000"))
-                        .progressPercentage(new BigDecimal("70"))
-                        .build()
-        );
+                progressRepository.save(
+                                MissionProgress.builder()
+                                                .mission(mission)
+                                                .user(child)
+                                                .progressAmount(new BigDecimal("7000"))
+                                                .progressPercentage(new BigDecimal("70"))
+                                                .build());
 
-        List<MissionProgress> list =
-                progressRepository.findByMissionIdOrderByLastActivityAtDesc(mission.getId());
+                List<MissionProgress> list = progressRepository
+                                .findByMissionIdOrderByLastActivityAtDesc(mission.getId());
 
-        assertThat(list).hasSize(2);
-        assertThat(list.get(0).getProgressPercentage()).isEqualTo(new BigDecimal("70"));
-    }
+                assertThat(list).hasSize(2);
+                assertThat(list.get(0).getProgressPercentage()).isEqualTo(new BigDecimal("70"));
+        }
 }

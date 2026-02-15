@@ -95,7 +95,8 @@ public class UserService {
         int birthYear = birthDate.getYear();
         int age = currentYear - birthYear;
 
-        if (age < 5 || age > 15) {
+        // 초등 3-6학년 기준 (만 9-12세 가정)
+        if (age < 9 || age > 12) {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
@@ -121,6 +122,11 @@ public class UserService {
     private User findUserByUid(String firebaseUid) {
         return userRepository.findByFirebaseUid(firebaseUid)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    // Firebase UID로 사용자 ID 조회
+    public Long getUserIdByFirebaseUid(String firebaseUid) {
+        return findUserByUid(firebaseUid).getId();
     }
 
     // 헬퍼 메서드: 이미지 파일 검증

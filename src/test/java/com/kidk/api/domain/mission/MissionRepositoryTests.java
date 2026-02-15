@@ -1,6 +1,8 @@
 package com.kidk.api.domain.mission;
 
 import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.enums.MissionStatus;
+import com.kidk.api.domain.mission.enums.MissionType;
 import com.kidk.api.domain.mission.repository.MissionRepository;
 import com.kidk.api.domain.user.entity.User;
 import com.kidk.api.domain.user.repository.UserRepository;
@@ -21,107 +23,101 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class MissionRepositoryTests {
 
-    @Autowired
-    private MissionRepository missionRepository;
+        @Autowired
+        private MissionRepository missionRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Test
-    @DisplayName("미션 생성 및 조회")
-    void saveAndFind() {
-        // 1. creator / owner 유저 생성
-        User creator = userRepository.save(
-                User.builder()
-                        .firebaseUid("creator-uid")
-                        .email("creator@test.com")
-                        .userType("PARENT")
-                        .name("부모1")
-                        .status("ACTIVE")
-                        .build()
-        );
+        @Test
+        @DisplayName("미션 생성 및 조회")
+        void saveAndFind() {
+                // 1. creator / owner 유저 생성
+                User creator = userRepository.save(
+                                User.builder()
+                                                .firebaseUid("creator-uid")
+                                                .email("creator@test.com")
+                                                .userType("PARENT")
+                                                .name("부모1")
+                                                .status("ACTIVE")
+                                                .build());
 
-        User owner = userRepository.save(
-                User.builder()
-                        .firebaseUid("owner-uid")
-                        .email("owner@test.com")
-                        .userType("CHILD")
-                        .name("아이1")
-                        .status("ACTIVE")
-                        .build()
-        );
+                User owner = userRepository.save(
+                                User.builder()
+                                                .firebaseUid("owner-uid")
+                                                .email("owner@test.com")
+                                                .userType("CHILD")
+                                                .name("아이1")
+                                                .status("ACTIVE")
+                                                .build());
 
-        // 2. mission 저장
-        Mission mission = Mission.builder()
-                .creator(creator)
-                .owner(owner)
-                .missionType("SAVING")
-                .title("용돈 모으기")
-                .description("5000원 모으기")
-                .targetAmount(new BigDecimal("5000"))
-                .rewardAmount(new BigDecimal("1000"))
-                .status("PENDING")
-                .build();
+                // 2. mission 저장
+                Mission mission = Mission.builder()
+                                .creator(creator)
+                                .owner(owner)
+                                .missionType(MissionType.SAVINGS)
+                                .title("용돈 모으기")
+                                .description("5000원 모으기")
+                                .targetAmount(new BigDecimal("5000"))
+                                .rewardAmount(new BigDecimal("1000"))
+                                .status(MissionStatus.ACTIVE)
+                                .build();
 
-        Mission saved = missionRepository.save(mission);
+                Mission saved = missionRepository.save(mission);
 
-        // 3. 단일 조회
-        Mission found = missionRepository.findById(saved.getId())
-                .orElseThrow();
+                // 3. 단일 조회
+                Mission found = missionRepository.findById(saved.getId())
+                                .orElseThrow();
 
-        assertThat(found.getTitle()).isEqualTo("용돈 모으기");
-        assertThat(found.getCreator().getEmail()).isEqualTo("creator@test.com");
-        assertThat(found.getOwner().getEmail()).isEqualTo("owner@test.com");
-        assertThat(found.getMissionType()).isEqualTo("SAVING");
-    }
+                assertThat(found.getTitle()).isEqualTo("용돈 모으기");
+                assertThat(found.getCreator().getEmail()).isEqualTo("creator@test.com");
+                assertThat(found.getOwner().getEmail()).isEqualTo("owner@test.com");
+                assertThat(found.getMissionType()).isEqualTo(MissionType.SAVINGS);
+        }
 
-    @Test
-    @DisplayName("ownerId 기준 미션 조회")
-    void findByOwnerId() {
-        User creator = userRepository.save(
-                User.builder()
-                        .firebaseUid("p1")
-                        .email("p@test.com")
-                        .userType("PARENT")
-                        .name("부모")
-                        .status("ACTIVE")
-                        .build()
-        );
+        @Test
+        @DisplayName("ownerId 기준 미션 조회")
+        void findByOwnerId() {
+                User creator = userRepository.save(
+                                User.builder()
+                                                .firebaseUid("p1")
+                                                .email("p@test.com")
+                                                .userType("PARENT")
+                                                .name("부모")
+                                                .status("ACTIVE")
+                                                .build());
 
-        User owner = userRepository.save(
-                User.builder()
-                        .firebaseUid("c1")
-                        .email("c@test.com")
-                        .userType("CHILD")
-                        .name("아이")
-                        .status("ACTIVE")
-                        .build()
-        );
+                User owner = userRepository.save(
+                                User.builder()
+                                                .firebaseUid("c1")
+                                                .email("c@test.com")
+                                                .userType("CHILD")
+                                                .name("아이")
+                                                .status("ACTIVE")
+                                                .build());
 
-        missionRepository.save(
-                Mission.builder()
-                        .creator(creator)
-                        .owner(owner)
-                        .missionType("CLEAN_ROOM")
-                        .title("방 청소")
-                        .rewardAmount(new BigDecimal("500"))
-                        .status("PENDING")
-                        .build()
-        );
+                missionRepository.save(
+                                Mission.builder()
+                                                .creator(creator)
+                                                .owner(owner)
+                                                .missionType(MissionType.HOUSEWORK)
+                                                .title("방 청소")
+                                                .rewardAmount(new BigDecimal("500"))
+                                                .status(MissionStatus.ACTIVE)
+                                                .build());
 
-        missionRepository.save(
-                Mission.builder()
-                        .creator(creator)
-                        .owner(owner)
-                        .missionType("STUDY")
-                        .title("수학 공부 30분")
-                        .rewardAmount(new BigDecimal("1000"))
-                        .status("PENDING")
-                        .build()
-        );
+                missionRepository.save(
+                                Mission.builder()
+                                                .creator(creator)
+                                                .owner(owner)
+                                                .missionType(MissionType.STUDY)
+                                                .title("수학 공부 30분")
+                                                .rewardAmount(new BigDecimal("1000"))
+                                                .status(MissionStatus.ACTIVE)
+                                                .build());
 
-        List<Mission> missions = missionRepository.findByOwnerId(owner.getId());
+                List<Mission> missions = missionRepository.findByOwnerId(owner.getId());
 
-        assertThat(missions).hasSize(2);
-    }
+                assertThat(missions).hasSize(2);
+        }
 }

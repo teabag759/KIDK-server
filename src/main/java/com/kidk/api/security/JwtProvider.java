@@ -61,6 +61,19 @@ public class JwtProvider {
                 .compact();
     }
 
+    // 1-1. Access Token 생성 (userId 포함)
+    public String createAccessToken(String firebaseUid, String role, Long userId) {
+        Claims claims = Jwts.claims().setSubject(firebaseUid);
+        claims.put("role", role);
+        claims.put("userId", userId);
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
     // 2. Refresh Token 생성
     public String createRefreshToken(String firebaseUid) {
         Claims claims = Jwts.claims().setSubject(firebaseUid);
@@ -85,6 +98,22 @@ public class JwtProvider {
     public String getFirebaseUid(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // 토큰에서 userId 추출
+    public Long getUserId(String token) {
+        Object value = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("userId");
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Integer) {
+            return ((Integer) value).longValue();
+        }
+        if (value instanceof Long) {
+            return (Long) value;
+        }
+        return Long.valueOf(value.toString());
     }
 
     // 5. Request Header에서 토큰 추출 "Authorization: Bearer <token>"

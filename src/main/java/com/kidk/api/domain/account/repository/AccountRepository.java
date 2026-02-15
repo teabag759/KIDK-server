@@ -24,6 +24,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     // 3. 특정 유저의 PRIMARY 계좌 조회 (null 허용이라 Boolean 사용)
     Optional<Account> findByUserIdAndPrimary(Long userId, Boolean primary);
 
+    // 주 계좌 조회 (primary = true)
+    Optional<Account> findByUserIdAndPrimaryTrue(Long userId);
+
     // 4. 계좌명 중복 확인 (유저별)
     boolean existsByUserIdAndAccountName(Long userId, String accountName);
 
@@ -40,4 +43,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.id = :id")
     Optional<Account> findByIdWithLock(@Param("id") Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Account a WHERE a.id = :id AND a.user.id = :userId")
+    Optional<Account> findByIdAndUserIdWithLock(@Param("id") Long id, @Param("userId") Long userId);
 }

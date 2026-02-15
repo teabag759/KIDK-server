@@ -27,4 +27,13 @@ public class AccountRequest {
     @DecimalMin(value = "0.00", message = "초기 잔액은 0 이상이어야 합니다")
     @DecimalMax(value = "999999999.99", message = "초기 잔액이 너무 큽니다")
     private BigDecimal initialBalance;
+
+    // 계좌 수정용 DTO
+    @Getter
+    @NoArgsConstructor
+    public static class Update {
+        @NotBlank(message = "계좌 이름은 필수입니다")
+        @Size(min = 1, max = 100, message = "계좌 이름은 1-100자 사이여야 합니다")
+        private String accountName;
+    }
 }

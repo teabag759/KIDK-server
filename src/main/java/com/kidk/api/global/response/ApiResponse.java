@@ -13,6 +13,7 @@ public class ApiResponse<T> {
 
     private boolean success;
     private T data;
+    private PageInfo page;
     private ErrorBody error;
 
     // 성공 응답 생성 (데이터 있음)
@@ -20,6 +21,24 @@ public class ApiResponse<T> {
         ApiResponse<T> response = new ApiResponse<>();
         response.success = true;
         response.data = data;
+        return response;
+    }
+
+    // 성공 응답 생성 (페이지 정보 포함)
+    public static <T> ApiResponse<T> success(T data, PageInfo page) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.success = true;
+        response.data = data;
+        response.page = page;
+        return response;
+    }
+
+    // 성공 응답 생성 (Page 객체 기반)
+    public static <T> ApiResponse<java.util.List<T>> successPage(org.springframework.data.domain.Page<T> page) {
+        ApiResponse<java.util.List<T>> response = new ApiResponse<>();
+        response.success = true;
+        response.data = page.getContent();
+        response.page = PageInfo.from(page);
         return response;
     }
 
@@ -55,6 +74,28 @@ public class ApiResponse<T> {
         public ErrorBody(String code, String message) {
             this.code = code;
             this.message = message;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class PageInfo {
+        private int page;
+        private int size;
+        private long totalElements;
+        private int totalPages;
+        private boolean first;
+        private boolean last;
+
+        public static PageInfo from(org.springframework.data.domain.Page<?> page) {
+            PageInfo info = new PageInfo();
+            info.page = page.getNumber();
+            info.size = page.getSize();
+            info.totalElements = page.getTotalElements();
+            info.totalPages = page.getTotalPages();
+            info.first = page.isFirst();
+            info.last = page.isLast();
+            return info;
         }
     }
 }

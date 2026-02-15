@@ -1,6 +1,8 @@
 package com.kidk.api.domain.mission.dto;
 
 import com.kidk.api.domain.mission.entity.Mission;
+import com.kidk.api.domain.mission.enums.MissionStatus;
+import com.kidk.api.domain.mission.enums.MissionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,11 +14,11 @@ public class MissionResponse {
     private final String creatorName;
     private final Long ownerId;
     private final String ownerName;
-    private final String missionType;
+    private final MissionType missionType;
     private final String title;
     private final String description;
     private final BigDecimal rewardAmount;
-    private final String status;
+    private final MissionStatus status;
     private final LocalDate targetDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime completedAt;
@@ -37,4 +39,56 @@ public class MissionResponse {
         this.completedAt = mission.getCompletedAt();
     }
 
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public MissionType getMissionType() {
+        return missionType;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public BigDecimal getRewardAmount() {
+        return rewardAmount;
+    }
+
+    public MissionStatus getStatus() {
+        return status;
+    }
+
+    public LocalDate getTargetDate() {
+        return targetDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
 }

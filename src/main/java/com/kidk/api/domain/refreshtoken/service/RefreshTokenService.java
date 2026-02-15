@@ -41,8 +41,7 @@ public class RefreshTokenService {
                                     .isValid(true)
                                     .build();
                             refreshTokenRepository.save(newToken);
-                        }
-                );
+                        });
     }
 
     // 최대 디바이스 개수 초과 시 가장 오래된 토큰 삭제
@@ -66,6 +65,17 @@ public class RefreshTokenService {
                 .filter(t -> t.getExpiresAt().isAfter(LocalDateTime.now())) // 만료 시간 체크
                 .filter(RefreshToken::isValid) // 유효 상태 체크
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or Expired Refresh Token"));
+    }
+
+    // 사용자의 모든 디바이스 조회
+    public List<RefreshToken> findAllByUser(User user) {
+        return refreshTokenRepository.findByUser(user);
+    }
+
+    // 특정 디바이스 삭제
+    public void deleteByUserAndDeviceId(User user, String deviceId) {
+        refreshTokenRepository.findByUserAndDeviceId(user, deviceId)
+                .ifPresent(refreshTokenRepository::delete);
     }
 
     // 로그아웃 시 토큰 삭제

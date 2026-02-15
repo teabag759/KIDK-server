@@ -1,5 +1,7 @@
 package com.kidk.api.domain.mission.entity;
 
+import com.kidk.api.domain.mission.enums.MissionStatus;
+import com.kidk.api.domain.mission.enums.MissionType;
 import com.kidk.api.domain.user.entity.User;
 import com.kidk.api.common.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -32,8 +34,9 @@ public class Mission extends BaseTimeEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "mission_type", nullable = false, length = 20)
-    private String missionType;
+    private MissionType missionType;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -50,14 +53,15 @@ public class Mission extends BaseTimeEntity {
     @Column(name = "target_date")
     private LocalDate targetDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String status;
+    private MissionStatus status;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
     public void complete() {
-        this.status = "COMPLETED";
+        this.status = MissionStatus.COMPLETED;
         this.completedAt = LocalDateTime.now();
     }
 }
